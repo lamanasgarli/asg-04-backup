@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 public class WinManager : MonoBehaviour
 {
@@ -8,18 +7,17 @@ public class WinManager : MonoBehaviour
     public TMP_Text finalTimeText;
     public GameTimer gameTimer;
 
-    private bool hasWon = false;
+    public LeaderboardManager leaderboardManager; // NEW
 
     public void Win()
     {
-        if (hasWon) return;
-
-        hasWon = true;
-
         Time.timeScale = 0f;
 
         float time = gameTimer.GetFinalTime();
+
         finalTimeText.text = "Final Time: " + FormatTime(time);
+
+        leaderboardManager.AddTime(time); // NEW
 
         winPanel.SetActive(true);
     }
@@ -28,18 +26,6 @@ public class WinManager : MonoBehaviour
     {
         int minutes = Mathf.FloorToInt(time / 60);
         int seconds = Mathf.FloorToInt(time % 60);
-        return minutes.ToString("00") + ":" + seconds.ToString("00");
-    }
-
-    public void Restart()
-    {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    public void GoToMainMenu()
-    {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene("MainMenu");
+        return $"{minutes:00}:{seconds:00}";
     }
 }
